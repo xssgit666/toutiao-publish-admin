@@ -94,13 +94,19 @@ export default {
       this.loginLoading = true
       // 验证通过，提交登录
       try {
-        await login(this.user)
+        const res = await login(this.user)
         this.$message({
           message: '登陆成功',
           type: 'success'
         })
         // 关闭 loading
         this.loginLoading = false
+        // 将接口返回的用户数据存放到本地，方便后续使用
+        window.localStorage.setItem('user', JSON.stringify(res.data.data))
+        // 跳转到首页
+        this.$router.push({
+          name: 'home'
+        })
       } catch (err) {
         console.log('登陆失败', err)
         this.$message.error('登录失败，手机号或验证码错误')
