@@ -56,14 +56,19 @@ export default {
   created () {
     this.loadUserProfile()
   },
-  mounted () {},
+  mounted () {
+    // 使用全局事件总线更新顶部用户信息
+    this.$bus.$on('update-user', data => {
+      this.user.name = data.name
+      this.user.photo = data.photo
+    })
+  },
   methods: {
     async loadUserProfile () {
       const { data } = await getUserProfile()
       this.user = data.data
     },
     onLogout () {
-      // 直接从element复制函数体使用
       this.$confirm('确认退出登录吗?', '退出提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

@@ -1,6 +1,7 @@
 <template>
+  <!-- 启用router模式会在激活导航时以 index 作为 path 进行路由跳转。:default-active="$route.path"可解决刷新不对应bug -->
   <el-menu
-    default-active="/"
+    :default-active="$route.path"
     class="el-menu-vertical-demo"
     background-color="#545c64"
     text-color="#fff"

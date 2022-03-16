@@ -31,3 +31,52 @@ export const deleteArticle = articleId => {
     url: `/mp/v1_0/articles/${articleId}`
   })
 }
+
+// 发布文章
+export const addArticle = (data, draft) => {
+  // 假如有默认属性draft，默认属性 draft = false 不能放到形参的第一个，应放到最后一个
+  return request({
+    method: 'POST',
+    url: '/mp/v1_0/articles',
+    params: {
+      draft // 是否存为草稿（true 为草稿）
+    },
+    data
+  })
+}
+
+// 获取指定文章内容
+export const getArticle = articleId => {
+  return request({
+    method: 'GET',
+    url: `/mp/v1_0/articles/${articleId}`
+  })
+}
+
+// 修改文章
+export const updataArticle = (articleId, data, draft) => {
+  return request({
+    method: 'PUT',
+    url: `/mp/v1_0/articles/${articleId}`,
+    params: {
+      draft // 是否存为草稿（true 为草稿）
+    },
+    data
+  })
+}
+
+// 修改文章评论状态
+export const updateCommentStatus = (articleId, allowComment) => {
+  return request({
+    method: 'PUT',
+    url: '/mp/v1_0/comments/status',
+    // Query参数使用 params 设置
+    params: {
+      article_id: articleId // 对象的属性名不受代码规范限制
+    },
+    // body参数使用 data 设置
+    data: {
+      allow_comment: allowComment
+    }
+  })
+}

@@ -7,12 +7,14 @@
         <el-form ref="login-form" :model="user" :rules="rules">
             <el-form-item prop="mobile">
                 <el-input
+                  prefix-icon="el-icon-mobile-phone"
                   v-model="user.mobile"
                   placeholder="请输入手机号"
                 ></el-input>
             </el-form-item>
             <el-form-item prop="code">
                 <el-input
+                  prefix-icon="el-icon-unlock"
                   v-model="user.code"
                   placeholder="请输入验证码"
                 ></el-input>
@@ -60,6 +62,11 @@ export default {
           { pattern: /^\d{6}$/, message: '请输入正确的验证码格式', trigger: 'blur' }
         ],
         agree: [
+          // 验证通过：callback()
+          // 验证失败：callback(new Error('错误消息'))
+          // validator 验证函数不是来调用的，而是当 element 表单触发验证的时候它会自己内部调用
+          // 所以只需要提供校验函数处理逻辑就可以了
+          // 通过：callback()
           {
             validator: (rule, value, callback) => {
               if (value) {
@@ -82,6 +89,7 @@ export default {
   methods: {
     onLogin () {
       // 表单验证
+      // validate 方法是异步的
       this.$refs['login-form'].validate(valid => {
         if (!valid) {
           return
@@ -102,6 +110,8 @@ export default {
         // 关闭 loading
         this.loginLoading = false
         // 将接口返回的用户数据存放到本地，方便后续使用
+        // 本地存储只能存储字符串
+        // 如果需要存储对象、数组类型的数据，则把他们转为JSON格式字符串进行存储
         window.localStorage.setItem('user', JSON.stringify(res.data.data))
         // 跳转到首页
         this.$router.push({

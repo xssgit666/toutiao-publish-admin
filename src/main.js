@@ -11,12 +11,16 @@ import 'element-ui/lib/theme-chalk/index.css'
 // 加载全局样式文件
 import './styles/index.less'
 
-// 全局注册 element 组件库
+// 全局注册 element 组件库(须在全部引入后注册)
 Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
 new Vue({
   router,
-  render: h => h(App)
+  render: h => h(App),
+  // 安装全局事件总线
+  beforeCreate () {
+    Vue.prototype.$bus = this
+  }
 }).$mount('#app')

@@ -13,6 +13,7 @@
       <el-form size="mini" label-width="40px">
         <el-form-item label="状态">
           <el-radio-group v-model="status">
+            <!-- el-radio 默认把 :label 作为文本和选中之后的 value 值 -->
             <el-radio :label="null">全部</el-radio>
             <el-radio :label="0">草稿</el-radio>
             <el-radio :label="1">待审核</el-radio>
@@ -46,6 +47,7 @@
           </el-date-picker>
         </el-form-item>
         <el-form-item class="search">
+          <!-- button 按钮的 click 事件有个默认参数，当没有指定参数的时候，它会默认传递一个没用的数据 -->
           <el-button
             type="primary"
             :loading="loading"
@@ -61,6 +63,17 @@
         <span>根据筛选条件共查询到 {{totalCount}} 条结果：</span>
       </div>
       <!-- 数据表格 -->
+      <!--
+        Table 表格组件
+        1、把需要展示的数组列表数据绑定给 table 组件的 data 属性
+          注意：不用去 v-for 遍历，它自己会遍历
+        2、设计表格列 el-table-column
+          width 可以设定表格列的宽度
+          label 可以设定列的标题
+          prop  用来设定要渲染的列表项数据字段，只能展示文本
+
+        3、表格列默认只能渲染普通文本，如果需要展示其它内容，例如放个按钮啊、放个图片啊，那就需要自定义表格列模板了：https://element.eleme.cn/#/zh-CN/component/table#zi-ding-yi-lie-mo-ban
+       -->
       <el-table
         class="bt"
         v-loading="loading"
@@ -91,6 +104,7 @@
         <el-table-column
           prop="status"
           label="状态">
+          <!-- 如果需要在自定义列模板中获取当前遍历项数据，那么就在 template 上声明 slot-scope="scope" -->
           <template slot-scope="scope">
             <el-tag :type="articleStatus[scope.row.status].type">{{ articleStatus[scope.row.status].text }}</el-tag>
           </template>
@@ -102,14 +116,16 @@
         <el-table-column
           prop="address"
           label="操作">
+          <!-- 如果需要自定义表格列模板，则把需要自定义的内容放到 template 里面 -->
           <template slot-scope="scope">
             <el-button
               size="mini"
               circle
               type="primary"
               icon="el-icon-edit"
-              @click="handleEdit(scope.$index, scope.row)"
+              @click="$router.push('/publish?id=' + scope.row.id)"
             ></el-button>
+            <!-- 任何格式的和字符串相加都会自动转为字符串格式，故而不用加toString -->
             <el-button
               size="mini"
               type="danger"
@@ -183,6 +199,7 @@ export default {
         begin_pubdate: this.rangeDate ? this.rangeDate[0] : null,
         end_pubdate: this.rangeDate ? this.rangeDate[1] : null
       })
+      // 结构赋值时，加:xxx, xxx即为赋值后的新命名
       const { results, total_count: totalCount } = data.data
       this.articles = results
       this.totalCount = totalCount
@@ -205,7 +222,8 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteArticle(articleId).then(() => {
+        // 下面的.toString()是在转换JSONbig返回的数据
+        deleteArticle(articleId.toString()).then(() => {
           // 删除成功，更新当前页的文章数据列表
           this.loadArticles(this.page)
         })
@@ -235,6 +253,8 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  border-radius: 8px;
+  border: 1px solid #DCDFE6;
   background-color: #F5F7FA;
   .el-icon-picture-outline{
     font-size: 20px;
